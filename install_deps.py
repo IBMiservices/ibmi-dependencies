@@ -10,15 +10,11 @@ def clone_or_update(repo_name, repo_info, base_dir):
         subprocess.run(["git", "clone", repo_info["url"], repo_path], check=True)
     else:
         print(f"Mettre à jour {repo_name}...")
-        os.chdir(repo_path)
-        subprocess.run(["git", "pull"], check=True)
+        subprocess.run(["git", "-C", repo_path, "pull"], check=True)
     
-    os.chdir(repo_path)
     print(f"Basculer vers la référence {repo_info['ref']} pour {repo_name}...")
-    subprocess.run(["git", "checkout", repo_info["ref"]], check=True)
+    subprocess.run(["git", "-C", repo_path, "checkout", repo_info["ref"].strip()], check=True)
 
-    # Retourner au répertoire de base
-    os.chdir("..")
     print(f"{repo_name} est prêt.\n")
 
 def install_dependencies(dependencies_file, base_dir):
