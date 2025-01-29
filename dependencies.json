@@ -1,12 +1,17 @@
 {
-  "dependencies": {
-     "API": {
-        "url": "https://github.com/IBMiservices/API.git",
-        "branch": "main"
-     },
+   "dependencies": {
      "messageutils": {
-        "url": "https://github.com/IBMiservices/messageutils.git",
-        "branch": "1-classe-message"
+       "url": "https://github.com/IBMiservices/messageutils.git",
+       "ref": "main"
+     },
+     "API": {
+       "url": "https://github.com/IBMiservices/API.git",
+       "ref": " v0.0.1"
+     },
+     "logging-service": {
+       "url": "https://github.com/IBMiservices/ftpservices.git",
+       "ref": "82eda79"
      }
-  }
-}
+   }
+ }
+ 
