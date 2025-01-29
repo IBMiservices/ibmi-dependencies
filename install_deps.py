@@ -18,7 +18,7 @@ def clone_or_update(repo_name, repo_info, base_dir):
     subprocess.run(["git", "checkout", repo_info["ref"]], check=True)
 
     # Retourner au répertoire de base
-    os.chdir(base_dir)
+    os.chdir("..")
     print(f"{repo_name} est prêt.\n")
 
 def install_dependencies(dependencies_file, base_dir):
@@ -33,7 +33,6 @@ def install_dependencies(dependencies_file, base_dir):
 
     # Assure-toi que le répertoire de base existe
     os.makedirs(base_dir, exist_ok=True)
-    os.chdir(base_dir)
 
     # Traiter chaque dépendance
     for repo_name, repo_info in dependencies.items():

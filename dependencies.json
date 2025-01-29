@@ -6,7 +6,7 @@
      },
      "API": {
        "url": "https://github.com/IBMiservices/API.git",
-       "ref": " v0.0.1"
+       "ref": "v0.0.1"
      },
      "logging-service": {
        "url": "https://github.com/IBMiservices/ftpservices.git",
