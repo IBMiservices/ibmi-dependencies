@@ -1,6 +1,7 @@
 import os
 import subprocess
 import json
+import shutil
 
 def clone_or_update(repo_name, repo_info, base_dir):
     repo_path = os.path.join(base_dir, repo_name)
@@ -16,6 +17,13 @@ def clone_or_update(repo_name, repo_info, base_dir):
     subprocess.run(["git", "-C", repo_path, "checkout", repo_info["ref"].strip()], check=True)
 
     print(f"{repo_name} est prêt.\n")
+    
+    # Supprimer le dossier .vscode s'il existe
+    vscode_path = os.path.join(repo_path, ".vscode")
+    if os.path.exists(vscode_path):
+        print(f"Suppression du dossier .vscode pour {repo_name}...")
+        shutil.rmtree(vscode_path)
+        print(f"Dossier .vscode supprimé pour {repo_name}.\n")
 
 def install_dependencies(dependencies_file, base_dir):
     """
@@ -37,5 +45,5 @@ def install_dependencies(dependencies_file, base_dir):
 # Exemple d'utilisation
 if __name__ == "__main__":
     dependencies_file = "dependencies.json"  # Chemin vers le fichier des dépendances
-    base_dir = "repos"  # Répertoire où cloner les dépôts
+    base_dir = "."  # Répertoire où cloner les dépôts
     install_dependencies(dependencies_file, base_dir)
