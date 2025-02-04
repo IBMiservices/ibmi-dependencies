@@ -24,6 +24,13 @@ def clone_or_update(repo_name, repo_info, base_dir):
         print(f"Suppression du dossier .vscode pour {repo_name}...")
         shutil.rmtree(vscode_path)
         print(f"Dossier .vscode supprimé pour {repo_name}.\n")
+    
+    # Supprimer le fichier iproj.json s'il existe
+    iproj_path = os.path.join(repo_path, "iproj.json")
+    if os.path.exists(iproj_path):
+        print(f"Suppression du fichier iproj.json pour {repo_name}...")
+        os.remove(iproj_path)
+        print(f"Fichier iproj.json supprimé pour {repo_name}.\n")
 
 def install_dependencies(dependencies_file, base_dir):
     """
