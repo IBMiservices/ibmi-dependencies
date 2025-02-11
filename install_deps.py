@@ -20,24 +20,31 @@ def clone_or_update(repo_name, repo_info, base_dir):
     
     # Supprimer le dossier .vscode s'il existe
     vscode_path = os.path.join(repo_path, ".vscode")
-    if (os.path.exists(vscode_path)):
+    if os.path.exists(vscode_path):
         print(f"Suppression du dossier .vscode pour {repo_name}...")
         shutil.rmtree(vscode_path)
         print(f"Dossier .vscode supprimé pour {repo_name}.\n")
     
     # Supprimer le fichier iproj.json s'il existe
     iproj_path = os.path.join(repo_path, "iproj.json")
-    if (os.path.exists(iproj_path)):
+    if os.path.exists(iproj_path):
         print(f"Suppression du fichier iproj.json pour {repo_name}...")
         os.remove(iproj_path)
         print(f"Fichier iproj.json supprimé pour {repo_name}.\n")
     
     # Supprimer le fichier Rules.mk s'il existe
     rules_mk_path = os.path.join(repo_path, "Rules.mk")
-    if (os.path.exists(rules_mk_path)):
+    if os.path.exists(rules_mk_path):
         print(f"Suppression du fichier Rules.mk pour {repo_name}...")
         os.remove(rules_mk_path)
         print(f"Fichier Rules.mk supprimé pour {repo_name}.\n")
+    
+    # Supprimer le dossier .git s'il existe
+    git_path = os.path.join(repo_path, ".git")
+    if os.path.exists(git_path):
+        print(f"Suppression du dossier .git pour {repo_name}...")
+        shutil.rmtree(git_path)
+        print(f"Dossier .git supprimé pour {repo_name}.\n")
 
 def install_dependencies(dependencies_file, base_dir):
     """
@@ -59,5 +66,5 @@ def install_dependencies(dependencies_file, base_dir):
 # Exemple d'utilisation
 if __name__ == "__main__":
     dependencies_file = "dependencies.json"  # Chemin vers le fichier des dépendances
-    base_dir = "dep"  # Répertoire où cloner les dépôts
+    base_dir = "."  # Répertoire où cloner les dépôts
     install_dependencies(dependencies_file, base_dir)
