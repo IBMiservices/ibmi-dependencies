@@ -2,6 +2,7 @@ import os
 import subprocess
 import json
 import shutil
+import stat
 
 def clone_or_update(repo_name, repo_info, base_dir):
     repo_path = os.path.join(base_dir, repo_name)
@@ -46,8 +47,12 @@ def clone_or_update(repo_name, repo_info, base_dir):
     git_path = os.path.join(repo_path, ".git")
     if os.path.exists(git_path):
         print(f"Suppression du dossier .git pour {repo_name}...")
-        shutil.rmtree(git_path)
+        shutil.rmtree(git_path, onerror=remove_readonly)
         print(f"Dossier .git supprimé pour {repo_name}.\n")
+
+def remove_readonly(func, path, excinfo):
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
 
 def install_dependencies(dependencies_file, base_dir):
     """
