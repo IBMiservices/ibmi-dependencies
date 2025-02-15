@@ -7,9 +7,6 @@ import stat
 def clone_or_update(repo_name, repo_info, base_dir):
     repo_path = os.path.join(base_dir, repo_name)
     
-    # Ajouter le répertoire 'dep' à .gitignore
-    add_to_gitignore(base_dir)
-
     # Supprimer le dossier du projet s'il existe déjà
     if os.path.exists(repo_path):
         print(f"Suppression du dossier existant pour {repo_name}...")
@@ -84,22 +81,6 @@ def install_dependencies(dependencies_file, base_dir, processed_repos=None):
             nested_dependencies_file = os.path.join(base_dir, repo_name, "dependencies.json")
             if os.path.exists(nested_dependencies_file):
                 install_dependencies(nested_dependencies_file, base_dir, processed_repos)
-
-def add_to_gitignore(directory):
-    gitignore_path = ".gitignore"
-    entry = f"{directory}/\n"
-
-    # Vérifier si le fichier .gitignore existe
-    if os.path.exists(gitignore_path):
-        with open(gitignore_path, "r") as file:
-            lines = file.readlines()
-            if entry not in lines:
-                with open(gitignore_path, "a") as file:
-                    file.write(entry)
-    else:
-        # Créer le fichier .gitignore et ajouter l'entrée
-        with open(gitignore_path, "w") as file:
-            file.write(entry)
 
 # Exemple d'utilisation
 if __name__ == "__main__":
