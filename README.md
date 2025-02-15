@@ -3,6 +3,7 @@
 This project allows you to clone and manage dependencies from various Git repositories specified in a JSON file. It also removes certain specific files and folders after cloning.
 
 ## Project Structure
+Copy the structure of this project in your [BOB](https://github.com/IBM/ibmi-bob) project.
 
 - `.vscode/`
   - `tasks.json`: Configuration tasks for Visual Studio Code.
