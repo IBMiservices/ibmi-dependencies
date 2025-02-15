@@ -45,6 +45,7 @@ To install the dependencies, run the `install_deps.py` script:
 ```sh
 python install_deps.py
 ```
+or use the ctrl+shift+p and Execute task Install dependencies.
 
 This will read the `dependencies.json` file, clone the specified repositories into the `dep` directory, and remove the specific files and folders.
 
