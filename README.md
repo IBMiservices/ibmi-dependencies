@@ -28,7 +28,8 @@ This file contains information about the dependencies to be cloned. Example:
       "ref": "v0.0.1"
     }
   }
-}```
+}
+```
 
 ### `install_deps.py`
 
