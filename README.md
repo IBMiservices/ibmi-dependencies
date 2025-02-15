@@ -28,7 +28,8 @@ This file contains information about the dependencies to be cloned. Example:
       "ref": "v0.0.1"
     }
   }
-}```
+}
+```
 
 install_deps.py
 This Python script reads the dependencies.json file, clones the specified repositories, and removes certain specific files and folders after cloning. Here is an overview of the main functions:
