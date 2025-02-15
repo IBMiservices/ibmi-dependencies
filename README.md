@@ -28,18 +28,25 @@ This file contains information about the dependencies to be cloned. Example:
       "ref": "v0.0.1"
     }
   }
-}
+}```
+
+### `install_deps.py`
+
+This Python script reads the `dependencies.json` file, clones the specified repositories, and removes certain specific files and folders after cloning. Here is an overview of the main functions:
+
+- `clone_or_update(repo_name, repo_info, base_dir)`: Clones or updates a Git repository, then removes certain specific files and folders.
+- `install_dependencies(dependencies_file, base_dir, processed_repos=None)`: Installs the dependencies specified in the JSON file, handling nested dependencies.
+
+## Usage
+
+To install the dependencies, run the `install_deps.py` script:
+
+```sh
+python install_deps.py
 ```
 
-install_deps.py
-This Python script reads the dependencies.json file, clones the specified repositories, and removes certain specific files and folders after cloning. Here is an overview of the main functions:
+This will read the `dependencies.json` file, clone the specified repositories into the `dep` directory, and remove the specific files and folders.
 
-clone_or_update(repo_name, repo_info, base_dir): Clones or updates a Git repository, then removes certain specific files and folders.
-install_dependencies(dependencies_file, base_dir, processed_repos=None): Installs the dependencies specified in the JSON file, handling nested dependencies.
-Usage
-To install the dependencies, run the install_deps.py script:
+## License
 
-This will read the dependencies.json file, clone the specified repositories into the dep directory, and remove the specific files and folders.
-
-License
 This project is licensed under the GNU General Public License v3.0.
