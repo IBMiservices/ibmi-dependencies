@@ -65,6 +65,12 @@ def install_dependencies(dependencies_file, base_dir, processed_repos=None):
     if processed_repos is None:
         processed_repos = set()
 
+    # Supprimer le répertoire de base s'il existe
+    if os.path.exists(base_dir):
+        print(f"Suppression du répertoire de base existant {base_dir}...")
+        shutil.rmtree(base_dir)
+        print(f"Répertoire de base {base_dir} supprimé.\n")
+
     with open(dependencies_file, "r") as f:
         dependencies = json.load(f)["dependencies"]
 
