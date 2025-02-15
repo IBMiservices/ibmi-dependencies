@@ -28,7 +28,7 @@ This file contains information about the dependencies to be cloned. Example:
       "ref": "v0.0.1"
     }
   }
-}
+}```
 
 install_deps.py
 This Python script reads the dependencies.json file, clones the specified repositories, and removes certain specific files and folders after cloning. Here is an overview of the main functions:
@@ -41,4 +41,4 @@ To install the dependencies, run the install_deps.py script:
 This will read the dependencies.json file, clone the specified repositories into the dep directory, and remove the specific files and folders.
 
 License
-This project is licensed under the GNU General Public License v3.0. ```
+This project is licensed under the GNU General Public License v3.0.
