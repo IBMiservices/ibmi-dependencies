@@ -65,11 +65,19 @@ def install_dependencies(dependencies_file, base_dir, processed_repos=None):
     if processed_repos is None:
         processed_repos = set()
 
-    # Supprimer le répertoire de base s'il existe
+    # Vider le répertoire de base s'il existe
     if os.path.exists(base_dir):
-        print(f"Suppression du répertoire de base existant {base_dir}...")
-        shutil.rmtree(base_dir)
-        print(f"Répertoire de base {base_dir} supprimé.\n")
+        print(f"Vidage du répertoire de base existant {base_dir}...")
+        for filename in os.listdir(base_dir):
+            file_path = os.path.join(base_dir, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+        print(f"Répertoire de base {base_dir} vidé.\n")
 
     with open(dependencies_file, "r") as f:
         dependencies = json.load(f)["dependencies"]
