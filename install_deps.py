@@ -22,6 +22,13 @@ def clone_or_update(repo_name, repo_info, base_dir):
 
     print(f"{repo_name} est prêt.\n")
     
+    # Vider le répertoire base_dir à l'intérieur du dépôt cloné
+    inner_base_dir = os.path.join(repo_path, base_dir)
+    if os.path.exists(inner_base_dir):
+        print(f"Vidage du répertoire {inner_base_dir} pour {repo_name}...")
+        empty_directory(inner_base_dir)
+        print(f"Répertoire {inner_base_dir} vidé pour {repo_name}.\n")
+    
     # Supprimer le dossier .vscode s'il existe
     vscode_path = os.path.join(repo_path, ".vscode")
     if os.path.exists(vscode_path):
@@ -54,6 +61,17 @@ def remove_readonly(func, path, excinfo):
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
+def empty_directory(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
 def install_dependencies(dependencies_file, base_dir, processed_repos=None):
     """
     Installe les dépendances spécifiées dans le fichier JSON.
@@ -64,20 +82,6 @@ def install_dependencies(dependencies_file, base_dir, processed_repos=None):
     """
     if processed_repos is None:
         processed_repos = set()
-
-    # Vider le répertoire de base s'il existe
-    if os.path.exists(base_dir):
-        print(f"Vidage du répertoire de base existant {base_dir}...")
-        for filename in os.listdir(base_dir):
-            file_path = os.path.join(base_dir, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print(f"Failed to delete {file_path}. Reason: {e}")
-        print(f"Répertoire de base {base_dir} vidé.\n")
 
     with open(dependencies_file, "r") as f:
         dependencies = json.load(f)["dependencies"]
