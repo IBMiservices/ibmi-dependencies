@@ -72,12 +72,33 @@ def empty_directory(directory):
         except Exception as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
-def install_dependencies(dependencies_file, base_dir, processed_repos=None):
+def update_rules_mk(project_root, base_dir):
+    rules_mk_path = os.path.join(project_root, "Rules.mk")
+    if not os.path.exists(rules_mk_path):
+        with open(rules_mk_path, "w") as f:
+            f.write("SUBDIRS = ")
+
+    with open(rules_mk_path, "r") as f:
+        content = f.read()
+
+    subdirs = content.split("SUBDIRS = ")[1].strip().split() if "SUBDIRS = " in content else []
+
+    for root, dirs, files in os.walk(base_dir):
+        if any(file.lower().endswith((".rpgle", ".sqlrpgle", ".clle")) for file in files):
+            relative_path = os.path.relpath(root, project_root)
+            if relative_path not in subdirs:
+                subdirs.append(relative_path)
+
+    with open(rules_mk_path, "w") as f:
+        f.write("SUBDIRS = " + " ".join(subdirs))
+
+def install_dependencies(dependencies_file, base_dir, project_root, processed_repos=None):
     """
     Installe les dépendances spécifiées dans le fichier JSON.
 
     :param dependencies_file: Chemin vers le fichier JSON des dépendances
     :param base_dir: Répertoire racine où les dépôts seront stockés
+    :param project_root: Répertoire racine du projet
     :param processed_repos: Ensemble des dépôts déjà traités pour éviter les redondances
     """
     if processed_repos is None:
@@ -98,10 +119,14 @@ def install_dependencies(dependencies_file, base_dir, processed_repos=None):
             # Traiter les dépendances imbriquées
             nested_dependencies_file = os.path.join(base_dir, repo_name, "dependencies.json")
             if os.path.exists(nested_dependencies_file):
-                install_dependencies(nested_dependencies_file, base_dir, processed_repos)
+                install_dependencies(nested_dependencies_file, base_dir, project_root, processed_repos)
+
+    # Mettre à jour le fichier Rules.mk à la racine du projet
+    update_rules_mk(project_root, base_dir)
 
 # Exemple d'utilisation
 if __name__ == "__main__":
     dependencies_file = "dependencies.json"  # Chemin vers le fichier des dépendances
     base_dir = "dep"  # Répertoire où cloner les dépôts
-    install_dependencies(dependencies_file, base_dir)
+    project_root = os.path.dirname(os.path.abspath(__file__))  # Répertoire racine du projet
+    install_dependencies(dependencies_file, base_dir, project_root)
