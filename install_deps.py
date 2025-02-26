@@ -22,7 +22,7 @@ def clone_or_update(repo_name, repo_info, base_dir):
 
     print(f"{repo_name} est prêt.\n")
     
-    # Vider le répertoire base_dir à l'intérieur du dépôt cloné
+    # Supprimer le répertoire base_dir à l'intérieur du dépôt cloné s'il existe
     inner_base_dir = os.path.join(repo_path, base_dir)
     if os.path.exists(inner_base_dir):
         print(f"Suppression du répertoire {inner_base_dir} pour {repo_name}...")
@@ -51,12 +51,11 @@ def clone_or_update(repo_name, repo_info, base_dir):
         print(f"Fichier Rules.mk supprimé pour {repo_name}.\n")
     
     # Supprimer le fichier .gitignore s'il existe
-    rules_mk_path = os.path.join(repo_path, ".gitignore")
-    if os.path.exists(rules_mk_path):
+    gitignore_path = os.path.join(repo_path, ".gitignore")
+    if os.path.exists(gitignore_path):
         print(f"Suppression du fichier .gitignore pour {repo_name}...")
-        os.remove(rules_mk_path)
+        os.remove(gitignore_path)
         print(f"Fichier .gitignore supprimé pour {repo_name}.\n")
-
 
     # Supprimer le dossier .git s'il existe
     git_path = os.path.join(repo_path, ".git")
@@ -79,6 +78,15 @@ def empty_directory(directory):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
+
+def remove_unnecessary_files(base_dir):
+    for root, dirs, files in os.walk(base_dir):
+        for file in files:
+            if file in ["install_deps.py", "dependencies.json"]:
+                file_path = os.path.join(root, file)
+                print(f"Suppression du fichier {file_path}...")
+                os.remove(file_path)
+                print(f"Fichier {file_path} supprimé.\n")
 
 def update_rules_mk(project_root, base_dir):
     rules_mk_path = os.path.join(project_root, "Rules.mk")
@@ -152,6 +160,9 @@ def install_dependencies(dependencies_file, base_dir, project_root, iproj_path, 
 
     # Mettre à jour le fichier iproj.json avec les chemins relatifs des fichiers *.rpgleinc ou *RPGLEINC
     update_include_path(iproj_path, base_dir)
+
+    # Supprimer les fichiers inutiles dans les dépôts
+    remove_unnecessary_files(base_dir)
 
 # Exemple d'utilisation
 if __name__ == "__main__":
