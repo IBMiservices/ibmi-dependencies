@@ -50,6 +50,14 @@ def clone_or_update(repo_name, repo_info, base_dir):
         os.remove(rules_mk_path)
         print(f"Fichier Rules.mk supprimé pour {repo_name}.\n")
     
+    # Supprimer le fichier .gitignore s'il existe
+    rules_mk_path = os.path.join(repo_path, ".gitignore")
+    if os.path.exists(rules_mk_path):
+        print(f"Suppression du fichier .gitignore pour {repo_name}...")
+        os.remove(rules_mk_path)
+        print(f"Fichier .gitignore supprimé pour {repo_name}.\n")
+
+
     # Supprimer le dossier .git s'il existe
     git_path = os.path.join(repo_path, ".git")
     if os.path.exists(git_path):
