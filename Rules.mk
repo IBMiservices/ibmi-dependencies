@@ -1,1 +1,1 @@
-SUBDIRS = tests/core
+SUBDIRS = tests/core dep/CommandsAPI/core

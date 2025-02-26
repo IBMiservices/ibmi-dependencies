@@ -6,7 +6,8 @@
   "includePath": [
     "dep/APIIBMi/Sources",
     "tests/core",
-    "tests/ref"
+    "tests/ref",
+    "dep/CommandsAPI/reference"
   ],
   "objlib": "*CURLIB",
   "curlib": "&CURLIB",

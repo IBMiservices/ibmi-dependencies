@@ -1,0 +1,17 @@
+**FREE
+//
+// Prototype for QCMDEXC API.
+//
+// Execute Command
+//
+// https://www.ibm.com/docs/en/i/7.5?topic=ssw_ibm_i_75/apis/qcmdexc.html
+//
+
+Dcl-PR QCMDEXC  EXTPGM('QCMDEXC');
+    commandString  Char(32702) CONST OPTIONS(*VARSIZE);
+    commandLengh Packed(15:5) CONST;
+End-PR;
+
+// Simple way to Execute CL command
+Dcl-PR execCommand;
+End-PR;
