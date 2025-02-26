@@ -1,0 +1,9 @@
+{
+   "dependencies": {
+     "APIIBMi": {
+       "url": "https://github.com/IBMiservices/API.git",
+       "ref": "v0.0.1"
+     }
+   }
+ }
+ 
