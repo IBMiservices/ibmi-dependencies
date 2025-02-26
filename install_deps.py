@@ -25,9 +25,9 @@ def clone_or_update(repo_name, repo_info, base_dir):
     # Vider le répertoire base_dir à l'intérieur du dépôt cloné
     inner_base_dir = os.path.join(repo_path, base_dir)
     if os.path.exists(inner_base_dir):
-        print(f"Vidage du répertoire {inner_base_dir} pour {repo_name}...")
-        empty_directory(inner_base_dir)
-        print(f"Répertoire {inner_base_dir} vidé pour {repo_name}.\n")
+        print(f"Suppression du répertoire {inner_base_dir} pour {repo_name}...")
+        shutil.rmtree(inner_base_dir)
+        print(f"Répertoire {inner_base_dir} supprimé pour {repo_name}.\n")
     
     # Supprimer le dossier .vscode s'il existe
     vscode_path = os.path.join(repo_path, ".vscode")
