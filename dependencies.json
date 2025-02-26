@@ -3,6 +3,10 @@
      "APIIBMi": {
        "url": "https://github.com/IBMiservices/API.git",
        "ref": "v0.0.2"
+     },
+     "CommandsAPI": {
+       "url": "https://github.com/IBMiservices/commandsAPI.git",
+       "ref": "1.0.0"
      }
    }
  }
