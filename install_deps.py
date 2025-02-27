@@ -125,6 +125,13 @@ def update_include_path(iproj_path, base_dir):
     with open(iproj_path, "w") as f:
         json.dump(iproj_data, f, indent=2, ensure_ascii=False)
 
+def create_empty_rules_mk(base_dir):
+    for root, dirs, files in os.walk(base_dir):
+        rules_mk_path = os.path.join(root, "Rules.mk")
+        if not os.path.exists(rules_mk_path):
+            with open(rules_mk_path, "w") as f:
+                f.write("")
+
 def install_dependencies(dependencies_file, base_dir, project_root, iproj_path, processed_repos=None):
     """
     Installe les dépendances spécifiées dans le fichier JSON.
@@ -154,6 +161,9 @@ def install_dependencies(dependencies_file, base_dir, project_root, iproj_path, 
             nested_dependencies_file = os.path.join(base_dir, repo_name, "dependencies.json")
             if os.path.exists(nested_dependencies_file):
                 install_dependencies(nested_dependencies_file, base_dir, project_root, iproj_path, processed_repos)
+
+    # Créer des fichiers Rules.mk vides dans base_dir et ses sous-dossiers
+    create_empty_rules_mk(base_dir)
 
     # Mettre à jour le fichier Rules.mk à la racine du projet
     update_rules_mk(project_root, base_dir)
