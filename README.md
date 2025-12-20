@@ -15,7 +15,11 @@ Copy the structure of this project in your [BOB](https://github.com/IBM/ibmi-bob
 
 ### `dependencies.json`
 
-This file contains information about the dependencies to be cloned. Example:
+This file contains information about the dependencies to be cloned. 
+
+**Note:** The current dependencies (APIIBMi and CommandsAPI) are examples to demonstrate the functionality. Replace them with your own project dependencies.
+
+Example:
 
 ```json
 {

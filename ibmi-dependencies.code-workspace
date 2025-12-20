@@ -33,7 +33,11 @@
         "type": "shell",
         "command": "python",
         "args": ["install_deps.py"],
-        "problemMatcher": []
+        "problemMatcher": [],
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
       }
     ]
   }

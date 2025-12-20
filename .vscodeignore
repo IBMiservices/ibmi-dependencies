@@ -1,0 +1,8 @@
+# Fichiers à exclure lors de l'utilisation comme modèle VS Code
+.git
+.gitignore
+dep/**
+*.log
+.env
+.logs
+.evfevent
