@@ -8,6 +8,5 @@
   },
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
-  "files.eol": "\n",
-  "code-for-ibmi.connectionSettings.autoSortIFSShortcuts": true
+  "files.eol": "\n"
 }
