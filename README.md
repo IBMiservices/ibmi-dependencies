@@ -5,11 +5,26 @@ This project allows you to clone and manage dependencies from various Git reposi
 ## Project Structure
 Copy the structure of this project in your [BOB](https://github.com/IBM/ibmi-bob) project.
 
-- `.vscode/`
-  - `tasks.json`: Configuration tasks for Visual Studio Code.
-- `dependencies.json`: JSON file containing information about the dependencies.
-- `install_deps.py`: Python script to install the dependencies.
-- `LICENSE`: Project license.
+```
+/
+├── core/                    # IBM i package source code (RPGLE, BND, etc.)
+├── ref/                     # Include files (.rpgleinc)
+├── .vscode-deps/            # Python tools for VS Code dependency management
+│   ├── ibmi_deps.py         # CLI tool (recommended)
+│   ├── install_deps_v2.py   # Modern installer (v2.0)
+│   ├── install_deps.py      # Legacy installer (v1.0)
+│   ├── migrate_v1_to_v2.py  # Migration tool
+│   └── README.md            # Tools documentation
+├── dependencies.json        # Your project dependencies
+├── iproj.json              # BOB build configuration
+├── Rules.mk                # Makefile rules
+└── ibmi-dependencies.code-workspace  # VS Code workspace config
+```
+
+**Key directories:**
+- **Package sources** (core/, ref/) remain at the root for BOB/gmake compatibility
+- **VS Code tools** (.vscode-deps/) are separated to avoid mixing with IBM i code
+- **Configuration files** (dependencies.json, iproj.json) stay at the root
 
 ## Files
 
