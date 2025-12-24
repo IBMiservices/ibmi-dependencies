@@ -116,6 +116,8 @@ def load_dependencies_config(dependencies_file: str) -> Optional[dict]:
         logger.error(f"✗ Erreur lors du chargement de {dependencies_file}: {str(e)}")
         return None
 
+def clone_or_update(repo_name, repo_info, base_dir):
+    """Clone ou met à jour un dépôt Git et effectue le nettoyage."""
     repo_path = os.path.join(base_dir, repo_name)
     
     # Supprimer le dossier du projet s'il existe déjà
