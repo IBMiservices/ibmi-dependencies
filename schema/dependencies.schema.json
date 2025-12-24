@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ibmiservices.github.io/ibmi-dependencies/schema/dependencies.schema.json",
+  "title": "IBM i Dependencies Configuration",
+  "description": "Schéma de configuration pour le gestionnaire de dépendances IBM i",
+  "type": "object",
+  "required": ["name", "version", "dependencies"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Référence au schéma JSON"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom du projet",
+      "pattern": "^[a-z0-9-_]+$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version du projet (semver)",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du projet"
+    },
+    "author": {
+      "type": "string",
+      "description": "Auteur du projet"
+    },
+    "license": {
+      "type": "string",
+      "description": "Licence du projet (ex: GPL-3.0, MIT, Apache-2.0)"
+    },
+    "repository": {
+      "type": "object",
+      "description": "Informations sur le dépôt",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["git"],
+          "description": "Type de gestionnaire de versions"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL du dépôt"
+        }
+      },
+      "required": ["type", "url"]
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Dépendances de production",
+      "additionalProperties": {
+        "$ref": "#/definitions/dependency"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Dépendances de développement",
+      "additionalProperties": {
+        "$ref": "#/definitions/dependency"
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration du gestionnaire de dépendances",
+      "properties": {
+        "targetDir": {
+          "type": "string",
+          "description": "Répertoire cible pour les dépendances",
+          "default": "dep"
+        },
+        "cleanGit": {
+          "type": "boolean",
+          "description": "Supprimer les fichiers .git",
+          "default": true
+        },
+        "cleanDocs": {
+          "type": "boolean",
+          "description": "Supprimer les fichiers de documentation",
+          "default": true
+        },
+        "updateBuildFiles": {
+          "type": "boolean",
+          "description": "Mettre à jour automatiquement Rules.mk et iproj.json",
+          "default": true
+        },
+        "recursiveDependencies": {
+          "type": "boolean",
+          "description": "Installer les dépendances des dépendances",
+          "default": true
+        }
+      }
+    }
+  },
+  "definitions": {
+    "dependency": {
+      "type": "object",
+      "description": "Configuration d'une dépendance",
+      "required": ["repository"],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL du dépôt Git"
+        },
+        "version": {
+          "type": "string",
+          "description": "Contrainte de version (semver)",
+          "pattern": "^(\\^|~|>=|<=|>|<)?[0-9]+(\\.[0-9x*]+(\\.[0-9x*]+)?)?$|^\\*$|^latest$"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Référence Git spécifique (branch, tag, commit SHA)"
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "Dépendance optionnelle (n'échoue pas si indisponible)",
+          "default": false
+        },
+        "exclude": {
+          "type": "array",
+          "description": "Fichiers/dossiers à exclure",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
