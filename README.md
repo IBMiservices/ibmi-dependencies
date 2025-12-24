@@ -48,7 +48,7 @@ This Python script reads the `dependencies.json` file, clones the specified repo
 To install the dependencies, run the `install_deps.py` script:
 
 ```sh
-python install_deps.py
+python .vscode-deps/install_deps.py
 ```
 or use the ctrl+shift+p in vscode and Execute task Install dependencies.
 

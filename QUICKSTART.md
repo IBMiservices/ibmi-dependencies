@@ -33,7 +33,7 @@ Créez un fichier à la racine de votre projet :
 ### Étape 2 : Installer les dépendances
 
 ```bash
-python install_deps_v2.py
+python .vscode-deps/install_deps_v2.py
 ```
 
 Vous verrez :

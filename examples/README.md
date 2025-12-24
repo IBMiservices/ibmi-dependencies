@@ -176,20 +176,20 @@ Ce fichier contient des exemples de dépendances que vous pouvez utiliser dans v
 
 ```bash
 # Créer un nouveau dependencies.json
-python ibmi_deps.py init --name mon-projet
+python .vscode-deps/ibmi_deps.py init --name mon-projet
 ```
 
 ### Ajouter des dépendances
 
 ```bash
 # Ajouter une dépendance de production
-python ibmi_deps.py add message-service \
+python .vscode-deps/ibmi_deps.py add message-service \
   https://github.com/IBMiservices/messageutils.git \
   --version "^1.0.0" \
   --ref main
 
 # Ajouter une dépendance de développement
-python ibmi_deps.py add rpg-test \
+python .vscode-deps/ibmi_deps.py add rpg-test \
   https://github.com/example/rpg-test.git \
   --dev
 ```
@@ -198,53 +198,53 @@ python ibmi_deps.py add rpg-test \
 
 ```bash
 # Installation normale
-python ibmi_deps.py install
+python .vscode-deps/ibmi_deps.py install
 
 # Simulation (dry-run)
-python ibmi_deps.py install --dry-run
+python .vscode-deps/ibmi_deps.py install --dry-run
 
 # Mode verbeux
-python ibmi_deps.py install --verbose
+python .vscode-deps/ibmi_deps.py install --verbose
 ```
 
 ### Lister les dépendances
 
 ```bash
 # Lister depuis dependencies.json
-python ibmi_deps.py list
+python .vscode-deps/ibmi_deps.py list
 
 # Lister depuis le lockfile
-python ibmi_deps.py list --locked
+python .vscode-deps/ibmi_deps.py list --locked
 ```
 
 ### Obtenir des informations
 
 ```bash
 # Info sur un package
-python ibmi_deps.py info message-service
+python .vscode-deps/ibmi_deps.py info message-service
 
 # Valider la configuration
-python ibmi_deps.py validate
+python .vscode-deps/ibmi_deps.py validate
 ```
 
 ### Mettre à jour
 
 ```bash
 # Mettre à jour toutes les dépendances
-python ibmi_deps.py update
+python .vscode-deps/ibmi_deps.py update
 
 # Mettre à jour un package spécifique
-python ibmi_deps.py update message-service
+python .vscode-deps/ibmi_deps.py update message-service
 ```
 
 ### Nettoyer
 
 ```bash
 # Nettoyer les dépendances installées
-python ibmi_deps.py clean
+python .vscode-deps/ibmi_deps.py clean
 
 # Tout nettoyer (incluant lockfile)
-python ibmi_deps.py clean --all
+python .vscode-deps/ibmi_deps.py clean --all
 ```
 
 ## 📚 Ressources

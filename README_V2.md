@@ -28,7 +28,7 @@ pip install jsonschema
 # Voir exemples ci-dessous
 
 # 4. Installer les dépendances
-python install_deps_v2.py
+python .vscode-deps/install_deps_v2.py
 ```
 
 ## 📋 Utilisation basique
@@ -54,10 +54,10 @@ python install_deps_v2.py
 
 ```bash
 # Utiliser la version 2.0 (recommandée)
-python install_deps_v2.py
+python .vscode-deps/install_deps_v2.py
 
 # Ou la version 1.0 (héritée)
-python install_deps.py
+python .vscode-deps/install_deps.py
 ```
 
 ### 3. Compiler votre projet

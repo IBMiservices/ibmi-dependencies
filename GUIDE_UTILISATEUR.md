@@ -36,10 +36,10 @@ Créez un fichier `dependencies.json` à la racine de votre projet :
 
 ```bash
 # Utiliser la nouvelle version
-python install_deps_v2.py
+python .vscode-deps/install_deps_v2.py
 
 # Ou l'ancienne version (moins de fonctionnalités)
-python install_deps.py
+python .vscode-deps/install_deps.py
 ```
 
 ## 📋 Fonctionnalités
