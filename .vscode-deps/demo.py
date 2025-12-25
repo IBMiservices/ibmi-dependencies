@@ -26,7 +26,7 @@ def demo():
         ("Fichier de verrouillage", "Garantit des installations reproductibles"),
         ("Validation du schéma", "Vérifie votre configuration avant installation"),
         ("Logging détaillé", "Suivez l'installation en temps réel"),
-        ("Intégration BOB", "Mise à jour automatique de Rules.mk et iproj.json")
+        ("Intégration TOBI", "Mise à jour automatique de Rules.mk et iproj.json")
     ]
     
     for i, (name, desc) in enumerate(features, 1):

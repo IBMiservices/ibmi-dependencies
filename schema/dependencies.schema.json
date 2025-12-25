@@ -30,7 +30,7 @@
     },
     "license": {
       "type": "string",
-      "description": "Licence du projet (ex: GPL-3.0, MIT, Apache-2.0)"
+      "description": "Licence du projet (ex: Apache-2.0, MIT, GPL-3.0)"
     },
     "repository": {
       "type": "object",

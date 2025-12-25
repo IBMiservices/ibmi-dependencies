@@ -50,7 +50,7 @@ class TestDependencySchema(unittest.TestCase):
             "version": "1.0.0",
             "description": "Test project",
             "author": "Test Author",
-            "license": "GPL-3.0",
+            "license": "Apache-2.0",
             "dependencies": {
                 "test-lib": {
                     "repository": "https://github.com/test/test-lib.git",

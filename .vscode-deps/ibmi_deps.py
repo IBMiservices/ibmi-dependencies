@@ -211,7 +211,7 @@ class IBMiDepsCLI:
             "version": "1.0.0",
             "description": f"Projet IBM i: {project_name}",
             "author": "",
-            "license": "GPL-3.0",
+            "license": "Apache-2.0",
             "repository": {
                 "type": "git",
                 "url": ""

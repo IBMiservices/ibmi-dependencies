@@ -71,7 +71,7 @@ def migrate_dependencies_file(input_file: str = "dependencies.json",
             "version": "1.0.0",
             "description": f"Projet IBM i - {project_name}",
             "author": "TODO: Ajouter votre nom",
-            "license": "GPL-3.0"
+            "license": "Apache-2.0"
         }
         
         # Ajouter le dépôt si disponible
