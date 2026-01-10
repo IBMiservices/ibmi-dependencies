@@ -1,0 +1,159 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/dep": true,
+      "**/.logs": true
+    },
+    "files.associations": {
+      "*.RPGLE": "rpgle",
+      "*.rpgleinc": "rpgle",
+      "*.BND": "plaintext",
+      "*.BNDDIR": "plaintext",
+      "Rules.mk": "makefile",
+      "dependencies.json": "jsonc",
+      "dependencies-lock.json": "json",
+      "iproj.json": "json"
+    },
+    "search.exclude": {
+      "**/__pycache__": true,
+      "**/dep": true,
+      "**/.logs": true,
+      "**/node_modules": true
+    },
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2,
+    "[python]": {
+      "editor.tabSize": 4,
+      "editor.insertSpaces": true
+    },
+    "[rpgle]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[json]": {
+      "editor.tabSize": 2
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "halcyontechltd.code-for-ibmi",
+      "barrettotte.ibmi-languages",
+      "ms-python.python",
+      "ms-python.vscode-pylance"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Install Dependencies (v2)",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/install_deps_v2.py"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Install Dependencies (v1 - legacy)",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/install_deps.py"
+        ],
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Validate Dependencies",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/ibmi_deps.py",
+          "validate"
+        ],
+        "group": "test",
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "List Dependencies",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/ibmi_deps.py",
+          "list"
+        ],
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Migrate v1 to v2",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/migrate_v1_to_v2.py"
+        ],
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Run Tests",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/tests.py"
+        ],
+        "group": "test",
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Clean Dependencies",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.vscode-deps/ibmi_deps.py",
+          "clean"
+        ],
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+}

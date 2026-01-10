@@ -1,3 +1,53 @@
+# Logs
 .logs
 .evfevent
+*.log
+install_deps.log
+
+# Environment
 .env
+.venv
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Dépendances installées
+dep/
+dependencies/
+
+# Fichiers de verrouillage (à commiter si souhaité)
+# dependencies-lock.json
+
+# Backups
+*.backup
+*.bak
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

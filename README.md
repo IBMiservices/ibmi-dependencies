@@ -1,86 +1,87 @@
-# IBM i Dependency Management Project
+# IBM i Dependency Management
 
-This project allows you to clone and manage dependencies from various Git repositories specified in a JSON file. It also removes certain specific files and folders after cloning.
+Gestionnaire de dépendances Git pour projets IBM i avec [TOBI](https://github.com/IBM/ibmi-bob).
 
-## Project Structure
-Copy the structure of this project in your [BOB](https://github.com/IBM/ibmi-bob) project.
+## Installation dans votre projet
 
-- `.vscode/`
-  - `tasks.json`: Configuration tasks for Visual Studio Code.
-- `dependencies.json`: JSON file containing information about the dependencies.
-- `install_deps.py`: Python script to install the dependencies.
-- `LICENSE`: Project license.
+1. **Copier les outils** dans votre projet IBM i :
+   ```sh
+   cd votre-projet-ibmi
+   git clone https://github.com/IBMiservices/ibmi-dependencies.git .ibmi-deps-temp
+   cp -r .ibmi-deps-temp/.vscode-deps .
+   cp .ibmi-deps-temp/dependencies.json .
+   rm -rf .ibmi-deps-temp
+   ```
 
-## Files
+2. **Installer jsonschema** (optionnel mais recommandé) :
+   ```sh
+   pip install jsonschema
+   ```
 
-### `dependencies.json`
+## Structure de votre projet
 
-This file contains information about the dependencies to be cloned. 
+```
+votre-projet/
+├── core/                 # Votre code source (RPGLE, BND, etc.)
+├── ref/                  # Vos fichiers include (.rpgleinc)
+├── dep/                  # Dépendances installées (auto)
+├── .vscode-deps/         # Outils de gestion
+├── dependencies.json     # Configuration des dépendances
+└── iproj.json            # Métadonnées du projet IBM i (TOBI/Code for IBM i)
+```
 
-**Note:** The current dependencies (APIIBMi and CommandsAPI) are examples to demonstrate the functionality. Replace them with your own project dependencies.
-
-Example:
+## Configuration `dependencies.json`
 
 ```json
 {
   "dependencies": {
-    "messageutils": {
-      "url": "https://github.com/IBMiservices/messageutils.git",
-      "ref": "1-classe-message"
-    },
-    "APIIBMi": {
-      "url": "https://github.com/IBMiservices/API.git",
-      "ref": "v0.0.1"
+    "mon-package": {
+      "url": "https://github.com/user/package.git",
+      "ref": "v1.0.0"
     }
   }
 }
 ```
 
-### `install_deps.py`
-
-This Python script reads the `dependencies.json` file, clones the specified repositories, and removes certain specific files and folders after cloning. Here is an overview of the main functions:
-
-- `clone_or_update(repo_name, repo_info, base_dir)`: Clones or updates a Git repository, then removes certain specific files and folders.
-- `install_dependencies(dependencies_file, base_dir, processed_repos=None)`: Installs the dependencies specified in the JSON file, handling nested dependencies.
-
-## Usage
-
-To install the dependencies, run the `install_deps.py` script:
+## Utilisation
 
 ```sh
-python install_deps.py
+# Installer les dépendances
+python .vscode-deps/install_deps_v2.py
+
+# Ou via VS Code: Ctrl+Shift+P > Tasks: Run Task > Install dependencies
 ```
-or use the ctrl+shift+p in vscode and Execute task Install dependencies.
 
-## Using this Project as a Template
+## Fichier `iproj.json`
 
-This project is configured as a VS Code workspace template for IBM i development. To use it as a template for your own projects:
+Fichier de métadonnées pour les projets IBM i (compatible TOBI, VS Code).
 
-### Method 1: Using the Workspace File
-1. Copy the `ibmi-dependencies.code-workspace` file to your new project directory
-2. Rename it to match your project name
-3. Open it with VS Code (File > Open Workspace from File)
-4. Customize the workspace settings as needed
+**Paramètres principaux** :
+- `objlib` : Bibliothèque cible (ex: `"&BUILDLIB"`)
+- `curlib` : Bibliothèque courante
+- `preUsrlibl` / `postUsrlibl` : Listes de bibliothèques
+- `setIBMiEnvCmd` : Commandes CL d'initialisation
+- `includePath` : Chemins d'inclusion
+- `buildCommand` : Commande de build (ex: `"gmake all"`)
 
-### Method 2: Manual Setup
-1. Copy the entire `.vscode/` directory to your new project
-2. The directory includes:
-   - `tasks.json`: Predefined tasks (like Install dependencies)
-   - `extensions.json`: Recommended extensions for IBM i development
-   - `settings.json`: Editor configuration optimized for RPGLE and IBM i files
-3. Adjust the `dependencies.json` file for your specific dependencies
-4. Modify `iproj.json` for your project's build configuration
+Variables dynamiques (`&VAR`) permettent des builds multi-environnements (dev, CI/CD).
 
-### Recommended Extensions
-The workspace automatically recommends these extensions:
-- Code for IBM i
-- IBM i Languages
-- RPGLE Language Support
+**Exemple** :
+```json
+{
+  "description": "Mon projet IBM i",
+  "version": "1.0.0",
+  "objlib": "&BUILDLIB",
+  "curlib": "MYLIB",
+  "preUsrlibl": ["QTEMP"],
+  "buildCommand": "gmake all"
+}
+```
 
-These will be suggested for installation when you open the workspace.
+## Documentation
 
-This will read the `dependencies.json` file, clone the specified repositories into the `dep` directory, and remove the specific files and folders.
+Voir [GUIDE_UTILISATEUR.md](GUIDE_UTILISATEUR.md) pour plus de détails.
 
-## License
+## Licence
 
-This project is licensed under the GNU General Public License v3.0.
+Apache-2.0

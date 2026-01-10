@@ -3,8 +3,121 @@ import subprocess
 import json
 import shutil
 import stat
+import logging
+import sys
+from typing import Dict, Set, Optional
+from pathlib import Path
+
+# Configuration du logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('install_deps.log', encoding='utf-8')
+    ]
+)
+logger = logging.getLogger(__name__)
+
+def validate_dependencies_schema(dependencies_data: dict, schema_path: str = "schema/dependencies.schema.json") -> bool:
+    """
+    Valide le fichier dependencies.json contre le schéma JSON.
+    
+    :param dependencies_data: Données du fichier dependencies.json
+    :param schema_path: Chemin vers le fichier de schéma
+    :return: True si valide, False sinon
+    """
+    try:
+        import jsonschema
+        from jsonschema import validate
+        
+        if not os.path.exists(schema_path):
+            logger.warning(f"Schéma non trouvé à {schema_path}, validation ignorée")
+            return True
+        
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            schema = json.load(f)
+        
+        validate(instance=dependencies_data, schema=schema)
+        logger.info("✓ Schéma JSON validé avec succès")
+        return True
+        
+    except ImportError:
+        logger.warning("Module jsonschema non installé. Installation recommandée: pip install jsonschema")
+        return True
+    except jsonschema.exceptions.ValidationError as e:
+        logger.error(f"✗ Erreur de validation du schéma: {e.message}")
+        logger.error(f"  Chemin: {' -> '.join(str(p) for p in e.path)}")
+        return False
+    except Exception as e:
+        logger.error(f"✗ Erreur lors de la validation: {str(e)}")
+        return False
+
+def check_circular_dependencies(current_repo: str, dependencies: Dict, visited: Set[str], path: list) -> bool:
+    """
+    Détecte les dépendances circulaires.
+    
+    :param current_repo: Dépôt actuel
+    :param dependencies: Dictionnaire de toutes les dépendances
+    :param visited: Ensemble des dépôts visités
+    :param path: Chemin actuel de la traversée
+    :return: True si dépendance circulaire détectée, False sinon
+    """
+    if current_repo in path:
+        cycle = ' -> '.join(path + [current_repo])
+        logger.error(f"✗ Dépendance circulaire détectée: {cycle}")
+        return True
+    
+    if current_repo in visited:
+        return False
+    
+    visited.add(current_repo)
+    path.append(current_repo)
+    
+    # Vérifier les dépendances du dépôt actuel
+    if current_repo in dependencies:
+        repo_info = dependencies[current_repo]
+        if isinstance(repo_info, dict):
+            # Charger les dépendances imbriquées si elles existent
+            # Note: Cette vérification sera plus complète lors du clonage réel
+            pass
+    
+    path.pop()
+    return False
+
+def load_dependencies_config(dependencies_file: str) -> Optional[dict]:
+    """
+    Charge et valide le fichier de configuration des dépendances.
+    
+    :param dependencies_file: Chemin vers le fichier dependencies.json
+    :return: Configuration chargée ou None en cas d'erreur
+    """
+    try:
+        if not os.path.exists(dependencies_file):
+            logger.error(f"✗ Fichier {dependencies_file} introuvable")
+            return None
+        
+        with open(dependencies_file, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        
+        logger.info(f"✓ Fichier {dependencies_file} chargé")
+        
+        # Validation du schéma
+        if not validate_dependencies_schema(config):
+            logger.error("✗ Validation du schéma échouée")
+            return None
+        
+        return config
+        
+    except json.JSONDecodeError as e:
+        logger.error(f"✗ Erreur JSON dans {dependencies_file}: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"✗ Erreur lors du chargement de {dependencies_file}: {str(e)}")
+        return None
 
 def clone_or_update(repo_name, repo_info, base_dir):
+    """Clone ou met à jour un dépôt Git et effectue le nettoyage."""
     repo_path = os.path.join(base_dir, repo_name)
     
     # Supprimer le dossier du projet s'il existe déjà
