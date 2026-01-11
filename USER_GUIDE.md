@@ -1,10 +1,10 @@
-# Guide d'utilisation - Gestionnaire de dépendances IBM i
+# User Guide - IBM i Dependency Manager
 
-## Installation dans votre projet
+## Installation in Your Project
 
-1. **Copier les outils** :
+1. **Copy the tools**:
    ```bash
-   cd votre-projet-ibmi
+   cd your-ibmi-project
    git clone https://github.com/IBMiservices/ibmi-dependencies.git .temp
    cp -r .temp/.vscode-deps .
    cp .temp/dependencies.json .
@@ -12,36 +12,36 @@
    rm -rf .temp
    ```
 
-2. **Installer jsonschema** (recommandé) :
+2. **Install jsonschema** (recommended):
    ```bash
    pip install jsonschema
    ```
 
-## Utilisation
+## Usage
 
 ```bash
-# Installer les dépendances
+# Install dependencies
 python .vscode-deps/install_deps_v2.py
 ```
 
-## Configuration `dependencies.json`
+## `dependencies.json` Configuration
 
-### Structure de base
+### Basic Structure
 
 ```json
 {
   "$schema": "./schema/dependencies.schema.json",
-  "name": "nom-du-projet",
+  "name": "project-name",
   "version": "1.0.0",
-  "description": "Description du projet",
-  "author": "Votre nom",
+  "description": "Project description",
+  "author": "Your name",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/user/projet.git"
+    "url": "https://github.com/user/project.git"
   },
   "dependencies": {
-    "nom-package": {
+    "package-name": {
       "repository": "https://github.com/user/package.git",
       "version": "^1.0.0",
       "ref": "v1.0.0",
@@ -65,32 +65,32 @@ python .vscode-deps/install_deps_v2.py
 }
 ```
 
-### Options de configuration
+### Configuration Options
 
-| Option | Type | Défaut | Description |
-|--------|------|--------|-------------|
-| `targetDir` | string | `"dep"` | Répertoire où installer les dépendances |
-| `cleanGit` | boolean | `true` | Supprimer les dossiers `.git` |
-| `cleanDocs` | boolean | `true` | Supprimer README, LICENSE, etc. |
-| `recursiveDependencies` | boolean | `true` | Installer les dépendances transitives |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `targetDir` | string | `"dep"` | Directory where dependencies are installed |
+| `cleanGit` | boolean | `true` | Remove `.git` folders |
+| `cleanDocs` | boolean | `true` | Remove README, LICENSE, etc. |
+| `recursiveDependencies` | boolean | `true` | Install transitive dependencies |
 
-### Contraintes de versions
+### Version Constraints
 
-| Syntaxe | Exemple |
+| Syntax | Example |
 |---------|---------|
-| `1.0.0` | Version exacte |
+| `1.0.0` | Exact version |
 | `^1.0.0` | Compatible `1.x.x` |
 | `~1.0.0` | Compatible `1.0.x` |
 | `>=1.0.0` | Minimum |
-| `latest` | Dernière version |
+| `latest` | Latest version |
 
-## Exemples
+## Examples
 
-### Projet simple
+### Simple Project
 
 ```json
 {
-  "name": "mon-app",
+  "name": "my-app",
   "version": "1.0.0",
   "dependencies": {
     "utils": {
@@ -101,11 +101,11 @@ python .vscode-deps/install_deps_v2.py
 }
 ```
 
-### Avec versions et exclusions
+### With Versions and Exclusions
 
 ```json
 {
-  "name": "mon-app",
+  "name": "my-app",
   "version": "1.0.0",
   "dependencies": {
     "core-lib": {
@@ -117,21 +117,21 @@ python .vscode-deps/install_deps_v2.py
 }
 ```
 
-## Dépannage
+## Troubleshooting
 
-### Git non trouvé
+### Git Not Found
 ```bash
-git --version  # Vérifier l'installation
+git --version  # Check installation
 ```
 
-### Module jsonschema manquant
+### Missing jsonschema Module
 ```bash
 pip install jsonschema
 ```
 
-### Accès dépôt privé
-Configurez vos identifiants Git avant l'installation.
+### Private Repository Access
+Configure your Git credentials before installation.
 
-## Licence
+## License
 
-Apache-2.0 - Voir [LICENSE](LICENSE)
+Apache-2.0 - See [LICENSE](LICENSE)
