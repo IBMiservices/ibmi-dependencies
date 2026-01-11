@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "lockfileVersion": 1,
+  "created": "2026-01-11T10:44:06.035439",
+  "packages": {
+    "logfori": {
+      "repository": "https://github.com/IBMiservices/logfori.git",
+      "ref": "main",
+      "version": "*",
+      "commitSha": "0fcaf3baa1ff22cfc10808dc22d45e9d5f392d73",
+      "resolved": "2026-01-11T10:44:08.187479",
+      "integrity": "8d34ee7ba7a661465346e67b3accafb303163690ca9e419314e650babba8d444",
+      "dependencies": {}
+    }
+  },
+  "updated": "2026-01-11T10:44:08.222842"
+}

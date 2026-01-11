@@ -1,0 +1,1 @@
+SUBDIRS = C:/Users/drubigol/AppData/Local/Temp/tmpph5v43k5/dep/logfori/qrpglesrc C:/Users/drubigol/AppData/Local/Temp/tmpc_gcz6br/dep/logfori/qrpglesrc C:/Users/drubigol/AppData/Local/Temp/tmpjivh7uba/dep/logfori/qrpglesrc

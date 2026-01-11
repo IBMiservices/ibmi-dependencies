@@ -71,8 +71,14 @@ python .vscode-deps/ibmi_deps.py add <nom> <url> --version "^1.0.0"
 python .vscode-deps/ibmi_deps.py remove <nom>
 python .vscode-deps/ibmi_deps.py validate  # Valide contre le schéma
 
-# Tests
-python .vscode-deps/tests.py
+# Tests unitaires
+python .vscode-deps/tests.py                    # Lance tous les tests
+python -m unittest .vscode-deps.tests -v        # Mode verbeux
+python -m unittest .vscode-deps.tests.TestLockfile  # Test spécifique
+
+# Tests avec pytest (optionnel)
+pytest .vscode-deps/tests.py -v
+pytest .vscode-deps/tests.py --cov=.vscode-deps  # Avec couverture
 
 # Build (sur IBM i avec Code for IBM i)
 makei build        # Compile tout
@@ -96,6 +102,80 @@ Utilise `jsonschema` pour valider `dependencies.json` contre `schema/dependencie
 ### Logging structuré
 
 Toutes les opérations loggent dans `install_deps.log` avec timestamps. Utilise le module `logging` Python standard.
+
+## Tests
+
+### Tests unitaires ([tests.py](.vscode-deps/tests.py))
+
+**Structure** : unittest standard Python avec 4 classes de tests :
+
+1. **TestDependencySchema** : validation des fichiers `dependencies.json`
+   - Configuration minimale/complète
+   - Format et champs requis
+
+2. **TestLockfile** : gestion du fichier de verrouillage
+   - Création/sauvegarde du lockfile
+   - Détection de changements de packages
+   - Persistance des commits SHA
+
+3. **TestCircularDependencies** : détection de dépendances circulaires
+   - Graphes de dépendances simples/complexes
+
+4. **TestVersionConstraints** : contraintes semver
+   - Versions exactes, `^` (caret), `~` (tilde)
+   - Matching de versions selon contraintes
+
+**Exécution** :
+```bash
+python .vscode-deps/tests.py              # Lance tous
+python -m unittest .vscode-deps.tests.TestLockfile -v  # Un seul
+```
+
+### Tests d'intégration
+
+**Tests manuels** pour validation end-to-end :
+
+1. **Installation de dépendances** :
+   ```bash
+   # Créer un projet test
+   mkdir test-projet && cd test-projet
+   cp -r /chemin/vers/.vscode-deps .
+   
+   # Créer dependencies.json avec dépôt Git réel
+   python .vscode-deps/ibmi_deps.py init --name test-integration
+   python .vscode-deps/ibmi_deps.py add test-lib https://github.com/user/lib.git
+   
+   # Installer et vérifier
+   python .vscode-deps/install_deps_v2.py
+   ls -la dep/test-lib  # Vérifie présence
+   cat dependencies-lock.json  # Vérifie SHA commit
+   ```
+
+2. **Détection de cycles** :
+   ```bash
+   # Tester avec dépendances circulaires intentionnelles
+   # (pkg-a dépend de pkg-b qui dépend de pkg-a)
+   # Le script doit échouer avec message explicite
+   ```
+
+3. **Mise à jour de build files** :
+   ```bash
+   python .vscode-deps/install_deps_v2.py
+   cat iproj.json | grep includePath  # Vérifie ajout dep/*/ref
+   cat Rules.mk | grep SUBDIRS        # Vérifie ajout subdirs
+   ```
+
+4. **Build IBM i** (nécessite connexion IBM i) :
+   ```bash
+   # Via Code for IBM i
+   # Actions > Build all
+   # Vérifie compilation avec includes des dépendances
+   ```
+
+**Patterns de test** :
+- `setUp()` / `tearDown()` : utilise `tempfile` pour isolation
+- Fichiers temporaires nettoyés automatiquement
+- Tests isolés sans side-effects
 
 ## Intégrations
 

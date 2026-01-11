@@ -13,6 +13,7 @@ import logging
 import sys
 from typing import Dict, Set, Optional
 from pathlib import Path
+from lockfile import DependencyLockfile
 
 # Configuration du logging
 logging.basicConfig(
@@ -166,7 +167,7 @@ def clean_doc_files(repo_path: str, repo_name: str):
             logger.debug(f"✓ Fichier {file} supprimé")
 
 
-def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict) -> bool:
+def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict) -> Optional[str]:
     """
     Clone ou met à jour un dépôt Git.
     
@@ -174,7 +175,7 @@ def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict
     :param repo_info: Informations du dépôt (url, ref, version, etc.)
     :param base_dir: Répertoire de base
     :param config: Configuration globale
-    :return: True si succès, False sinon
+    :return: Commit SHA si succès, None sinon
     """
     try:
         repo_path = os.path.join(base_dir, repo_name)
@@ -205,10 +206,10 @@ def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict
         if result.returncode != 0:
             if is_optional:
                 logger.warning(f"⚠ Échec du clonage de la dépendance optionnelle {repo_name}")
-                return True  # Ne pas échouer pour une dépendance optionnelle
+                return None  # Ne pas échouer pour une dépendance optionnelle
             else:
                 logger.error(f"✗ Échec du clonage de {repo_name}: {result.stderr}")
-                return False
+                return None
         
         logger.info(f"✓ {repo_name} cloné avec succès")
         
@@ -224,9 +225,17 @@ def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict
             
             if result.returncode != 0:
                 logger.error(f"✗ Échec du checkout de {ref} pour {repo_name}: {result.stderr}")
-                return False
+                return None
             
             logger.info(f"✓ Référence {ref} appliquée")
+        
+        # Récupérer le SHA du commit actuel
+        commit_sha_result = subprocess.run(
+            ["git", "-C", repo_path, "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True
+        )
+        commit_sha = commit_sha_result.stdout.strip() if commit_sha_result.returncode == 0 else None
         
         logger.info(f"✓ {repo_name} est prêt\n")
         
@@ -255,14 +264,14 @@ def clone_or_update(repo_name: str, repo_info: dict, base_dir: str, config: dict
                     os.remove(exclude_path)
                 logger.info(f"✓ Exclusion appliquée: {exclude_pattern}")
         
-        return True
+        return commit_sha
         
     except Exception as e:
         logger.error(f"✗ Erreur lors du traitement de {repo_name}: {str(e)}")
         if repo_info.get('optional', False):
             logger.warning(f"⚠ Dépendance optionnelle {repo_name} ignorée")
-            return True
-        return False
+            return None
+        return None
 
 
 def remove_unnecessary_files(base_dir):
@@ -290,7 +299,14 @@ def update_rules_mk(project_root, base_dir):
 
     for root, dirs, files in os.walk(base_dir):
         if any(file.lower().endswith((".rpgle", ".sqlrpgle", ".clle")) for file in files):
-            relative_path = os.path.relpath(root, project_root).replace("\\", "/")
+            # Gérer le cas des chemins cross-drive sur Windows
+            try:
+                relative_path = os.path.relpath(root, project_root).replace("\\", "/")
+            except ValueError:
+                # Si les chemins sont sur des lecteurs différents, utiliser le chemin absolu
+                logger.warning(f"Impossible de calculer le chemin relatif pour {root} (cross-drive)")
+                relative_path = os.path.abspath(root).replace("\\", "/")
+            
             if relative_path not in subdirs:
                 subdirs.append(relative_path)
 
@@ -302,6 +318,11 @@ def update_rules_mk(project_root, base_dir):
 
 def update_include_path(iproj_path, base_dir):
     """Met à jour les chemins d'inclusion dans iproj.json."""
+    # Vérifier si le fichier existe
+    if not os.path.exists(iproj_path):
+        logger.warning(f"Fichier {iproj_path} non trouvé, création ignorée")
+        return
+    
     with open(iproj_path, "r") as f:
         iproj_data = json.load(f)
 
@@ -310,7 +331,13 @@ def update_include_path(iproj_path, base_dir):
 
     for root, dirs, files in os.walk(base_dir):
         if any(file.lower().endswith(".rpgleinc") for file in files):
-            relative_path = os.path.relpath(root, os.path.dirname(iproj_path)).replace("\\", "/")
+            # Gérer le cas des chemins cross-drive
+            try:
+                relative_path = os.path.relpath(root, os.path.dirname(iproj_path)).replace("\\", "/")
+            except ValueError:
+                logger.warning(f"Impossible de calculer le chemin relatif pour {root} (cross-drive)")
+                relative_path = os.path.abspath(root).replace("\\", "/")
+            
             if relative_path not in include_path:
                 include_path.append(relative_path)
 
@@ -355,6 +382,12 @@ def install_dependencies(dependencies_file: str, base_dir: str, project_root: st
         logger.info("=" * 70)
         logger.info("Démarrage de l'installation des dépendances IBM i")
         logger.info("=" * 70)
+        
+        # Charger ou créer le lockfile
+        lockfile = DependencyLockfile(os.path.join(project_root, "dependencies-lock.json"))
+        lockfile.load()
+    else:
+        lockfile = None
 
     # Charger et valider la configuration
     config_data = load_dependencies_config(dependencies_file)
@@ -392,9 +425,20 @@ def install_dependencies(dependencies_file: str, base_dir: str, project_root: st
             logger.info(f"Traitement de la dépendance: {repo_name}")
             logger.info(f"{'─' * 70}")
             
-            if clone_or_update(repo_name, repo_info, base_dir, config):
+            commit_sha = clone_or_update(repo_name, repo_info, base_dir, config)
+            if commit_sha:
                 processed_repos.add(repo_name)
                 success_count += 1
+                
+                # Ajouter au lockfile
+                if lockfile:
+                    lockfile.add_package(
+                        name=repo_name,
+                        repo_url=repo_info.get('repository', ''),
+                        ref=repo_info.get('ref', ''),
+                        version=repo_info.get('version'),
+                        commit_sha=commit_sha
+                    )
                 
                 # Traiter les dépendances imbriquées si activé
                 if config.get("recursiveDependencies", True):
@@ -421,6 +465,11 @@ def install_dependencies(dependencies_file: str, base_dir: str, project_root: st
     
     # Résumé final (seulement pour l'appel initial)
     if len(processed_repos) == success_count + fail_count:
+        # Sauvegarder le lockfile
+        if lockfile:
+            lockfile.save()
+            logger.info("✓ Fichier dependencies-lock.json sauvegardé")
+        
         logger.info(f"\n{'=' * 70}")
         logger.info("Installation terminée")
         logger.info(f"{'=' * 70}")
@@ -436,7 +485,7 @@ def install_dependencies(dependencies_file: str, base_dir: str, project_root: st
 def main():
     """Point d'entrée principal du script."""
     dependencies_file = "dependencies.json"
-    project_root = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.getcwd()  # Utiliser le répertoire courant, pas celui du script
     iproj_path = os.path.join(project_root, "iproj.json")
     base_dir = "dep"  # Valeur par défaut, sera remplacée par config si spécifié
     
